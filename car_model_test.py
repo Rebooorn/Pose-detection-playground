@@ -12,9 +12,9 @@ from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 #IMG_SIZE = [3384, 2710]
 IMG_SIZE = [2710, 3384]
 # TEST_LOC_PARAM = [0.144469, -0.052166, -3.10855, 7.71139, 7.11818, 32.8131]
-TEST_LOC_PARAM = [-0.144469, 0.052166, 3.10855, 7.71139, 7.11818, 32.8131]
+# TEST_LOC_PARAM = [-0.144469, 0.052166, 3.10855, 7.71139, 7.11818, 32.8131]
 
-# [-0.214898, 0.0210617, 3.13819, -3.72663, 4.38063, 20.736]
+TEST_LOC_PARAM =  [-0.214898, 0.0210617, 3.13819, -3.72663, 4.38063, 20.736]
 
 def car_model_render(vertex, faces):
     # path = os.path.join(os.path.dirname(__file__), 'data', 'car_models', '019-SUV.pkl')
@@ -56,9 +56,13 @@ def car_model_2D_project(vertices):
     for i in range(pts_2d.shape[0]):
         img[pts_2d[i,1], pts_2d[i,0]] = 255
 
+    # load original img
+    ori = cv2.imread(r'./data_sample/ID_00b7fb303.jpg')
+    ori = cv2.cvtColor(ori, cv2.COLOR_BGR2RGB)
 
     # display the img
-    cv2.imshow('car', img)
+    cv2.imshow('car', cv2.resize(img, (800, 600)))
+    cv2.imshow('ori', cv2.resize(ori, (800, 600)))
     cv2.waitKey(0)
     cv2.destroyAllWindows()
 
@@ -80,5 +84,8 @@ if __name__ == '__main__':
     # car_model_render(vertex, faces)
 
     # test to project the 3D model to image
+
+    # Tip: the z axis is defined in the opposite direction
+    vertex[:, 2] = -vertex[:, 2]
     car_model_2D_project(vertex)
     
