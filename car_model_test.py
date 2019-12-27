@@ -1,12 +1,20 @@
 import numpy as np
 import json
 import matplotlib.pyplot as plt
+from helper import *
+import cv2
 
 # This is not used, however is important for 3D plot
 from mpl_toolkits.mplot3d import Axes3D
 import mpl_toolkits.mplot3d as a3
 from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 
+#IMG_SIZE = [3384, 2710]
+IMG_SIZE = [2710, 3384]
+# TEST_LOC_PARAM = [0.144469, -0.052166, -3.10855, 7.71139, 7.11818, 32.8131]
+TEST_LOC_PARAM = [-0.144469, 0.052166, 3.10855, 7.71139, 7.11818, 32.8131]
+
+# [-0.214898, 0.0210617, 3.13819, -3.72663, 4.38063, 20.736]
 
 def car_model_render(vertex, faces):
     # path = os.path.join(os.path.dirname(__file__), 'data', 'car_models', '019-SUV.pkl')
@@ -34,6 +42,27 @@ def car_model_render(vertex, faces):
     ax.set_zlim(-2.5, 2.5)
     plt.show()
 
+
+def car_model_2D_project(vertices):
+
+    camera_mtx = get_intrinsic_mtx()
+    trans_mtx = get_translation_mtx(TEST_LOC_PARAM)
+    pts_2d = get_2D_projection(pts_3d=vertices,
+                               trans_mtx=camera_mtx @ trans_mtx)
+    pts_2d = pts_2d.astype(np.int16)
+
+    # display the points on the blank image, which should show the shape and loc of the car
+    img = np.zeros(IMG_SIZE)
+    for i in range(pts_2d.shape[0]):
+        img[pts_2d[i,1], pts_2d[i,0]] = 255
+
+
+    # display the img
+    cv2.imshow('car', img)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
+
+
 if __name__ == '__main__':
     with open('019-SUV.json', 'rb') as jf:
         car_model = json.load(jf)
@@ -48,7 +77,8 @@ if __name__ == '__main__':
     print(faces.shape)
 
     # test to render 3D car model
-    car_model_render(vertex, faces)
+    # car_model_render(vertex, faces)
 
     # test to project the 3D model to image
+    car_model_2D_project(vertex)
     
