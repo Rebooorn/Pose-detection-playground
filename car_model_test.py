@@ -10,11 +10,10 @@ import mpl_toolkits.mplot3d as a3
 from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 
 #IMG_SIZE = [3384, 2710]
-IMG_SIZE = [2710, 3384]
-# TEST_LOC_PARAM = [0.144469, -0.052166, -3.10855, 7.71139, 7.11818, 32.8131]
-# TEST_LOC_PARAM = [-0.144469, 0.052166, 3.10855, 7.71139, 7.11818, 32.8131]
+IMG_SIZE = [2710, 3384, 3]
 
-TEST_LOC_PARAM =  [-0.214898, 0.0210617, 3.13819, -3.72663, 4.38063, 20.736]
+# TEST_LOC_PARAM =  [0.214898, -0.0210617, -3.13819, -3.72663, 4.38063, 20.736]
+TEST_LOC_PARAM =  [0.144469, -0.052166, -3.10855, 7.71139, 7.11818, 32.8131]
 
 def car_model_render(vertex, faces):
     # path = os.path.join(os.path.dirname(__file__), 'data', 'car_models', '019-SUV.pkl')
@@ -43,7 +42,7 @@ def car_model_render(vertex, faces):
     plt.show()
 
 
-def car_model_2D_project(vertices):
+def car_model_2D_project(vertices, faces):
 
     camera_mtx = get_intrinsic_mtx()
     trans_mtx = get_translation_mtx(TEST_LOC_PARAM)
@@ -52,9 +51,20 @@ def car_model_2D_project(vertices):
     pts_2d = pts_2d.astype(np.int16)
 
     # display the points on the blank image, which should show the shape and loc of the car
-    img = np.zeros(IMG_SIZE)
+    img = np.zeros(IMG_SIZE, np.uint8)
+    # img = np.ones(IMG_SIZE, np.uint8) * 255
     for i in range(pts_2d.shape[0]):
-        img[pts_2d[i,1], pts_2d[i,0]] = 255
+        img[pts_2d[i,1], pts_2d[i,0]] = np.array([255, 255, 255])
+
+    pts_2d = pts_2d[:, :2]
+    # render the car with faces
+
+    for face in faces:
+        pt1 = (pts_2d[face[0] - 1][0], pts_2d[face[0] - 1][1])
+        pt2 = (pts_2d[face[1] - 1][0], pts_2d[face[1] - 1][1])
+        pt3 = (pts_2d[face[2] - 1][0], pts_2d[face[2] - 1][1])
+        triangle_cnt = np.array([pt1, pt2, pt3], dtype=np.int64)
+        cv2.drawContours(img, [triangle_cnt], 0, (255, 255, 255), -1)
 
     # load original img
     ori = cv2.imread(r'./data_sample/ID_00b7fb303.jpg')
@@ -67,8 +77,23 @@ def car_model_2D_project(vertices):
     cv2.destroyAllWindows()
 
 
+def contour_test():
+    image = np.ones((300, 300, 3), np.uint8) * 255
+
+    pt1 = (150, 100)
+    pt2 = (100, 200)
+    pt3 = (200, 200)
+
+    triangle_cnt = np.array([pt1, pt2, pt3])
+
+    cv2.drawContours(image, [triangle_cnt], 0, (0, 255, 0), -1)
+
+    cv2.imshow("image", image)
+    cv2.waitKey()
+    cv2.destroyAllWindows()
+
 if __name__ == '__main__':
-    with open('019-SUV.json', 'rb') as jf:
+    with open('linken-SUV.json', 'rb') as jf:
         car_model = json.load(jf)
 
     # load the vertex of car model
@@ -84,8 +109,9 @@ if __name__ == '__main__':
     # car_model_render(vertex, faces)
 
     # test to project the 3D model to image
-
     # Tip: the z axis is defined in the opposite direction
-    vertex[:, 2] = -vertex[:, 2]
-    car_model_2D_project(vertex)
-    
+    # vertex[:, 2] = -vertex[:, 2]
+    car_model_2D_project(vertex, faces)
+
+    # contour test
+    # contour_test()
