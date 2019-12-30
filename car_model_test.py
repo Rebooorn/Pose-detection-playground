@@ -86,6 +86,6 @@ if __name__ == '__main__':
     # test to project the 3D model to image
 
     # Tip: the z axis is defined in the opposite direction
-    vertex[:, 2] = -vertex[:, 2]
+    # vertex[:, 2] = -vertex[:, 2]
     car_model_2D_project(vertex)
     
