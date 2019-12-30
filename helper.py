@@ -1,4 +1,5 @@
 import numpy as np
+import csv
 
 
 def get_intrinsic_mtx():
@@ -18,12 +19,15 @@ def get_translation_mtx(param):
     # The param is the list: [pitch, yaw, roll, x, y, z]
     # return the translation mtx from the parameters
     pitch, yaw, roll, x, y, z = param
+    yaw, pitch, roll = np.pi-pitch, np.pi-yaw, -roll
+
     mtx = np.array([
         [np.cos(yaw)*np.cos(pitch), np.cos(yaw)*np.sin(pitch)*np.sin(roll)-np.sin(yaw)*np.cos(roll), np.cos(yaw)*np.sin(pitch)*np.cos(roll)+np.sin(yaw)*np.sin(roll), x],
         [np.sin(yaw)*np.cos(pitch), np.sin(yaw)*np.sin(pitch)*np.sin(roll)+np.cos(yaw)*np.cos(roll), np.sin(yaw)*np.sin(pitch)*np.cos(roll)-np.cos(yaw)*np.sin(roll), y],
         [-np.sin(pitch),            np.cos(pitch)*np.sin(roll),                                      np.cos(pitch)*np.cos(roll),                                      z],
         [0,                         0,                                                               0,                                                               1]
     ])
+
     return mtx
 
 def get_2D_projection(pts_3d, trans_mtx):
@@ -38,7 +42,11 @@ def get_2D_projection(pts_3d, trans_mtx):
     pts_2d_affine = trans_mtx @ pts_3d_affine.T
 
     # convert 2d affine to 2d image coordinate
-    tmp = np.array([[pts_2d_affine[-1, :]],[pts_2d_affine[-1, :]],[pts_2d_affine[-1, :]]])
+    tmp = np.stack((pts_2d_affine[-1, :], pts_2d_affine[-1, :], pts_2d_affine[-1, :]))
+    # tmp = np.array([[pts_2d_affine[-1, :]],[pts_2d_affine[-1, :]],[pts_2d_affine[-1, :]]])
     pts_2d = pts_2d_affine / tmp
 
     return pts_2d.T
+
+def read_CSV(csv_path):
+    with open(csv_path, 'rb') as 
