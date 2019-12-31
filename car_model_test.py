@@ -1,8 +1,8 @@
 import numpy as np
-import json, pickle
+import json, pickle, glob
 import matplotlib.pyplot as plt
 from helper import *
-import cv2
+import cv2, os
 
 # This is not used, however is important for 3D plot
 from mpl_toolkits.mplot3d import Axes3D
@@ -108,10 +108,17 @@ def csv_reading_test(csv_path):
     with open('train_pose_params.pickle', 'wb') as f:
         pickle.dump(train_params, f)
 
-def training_dataset_generate():
+def training_dataset_generate(TrainImgPath, TrainMaskPath):
     # load original image and pose parameters, and generate the mask for training
     with open('train_pose_params.pickle', 'rb') as f:
         pose_params = pickle.load(f)
+
+    train_imgs = glob.glob(TrainImgPath + '/*.jpg')
+    for img_path in train_imgs:
+        ID = os.path.basename(img_path)[:-4]
+        poses_param = pose_params[ID]
+
+
 
 
 
