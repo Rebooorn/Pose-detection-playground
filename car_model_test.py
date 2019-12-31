@@ -1,5 +1,5 @@
 import numpy as np
-import json
+import json, pickle
 import matplotlib.pyplot as plt
 from helper import *
 import cv2
@@ -76,7 +76,7 @@ def car_model_2D_project(vertices, faces):
     cv2.waitKey(0)
     cv2.destroyAllWindows()
 
-
+# test of opencv drawContours() function
 def contour_test():
     image = np.ones((300, 300, 3), np.uint8) * 255
 
@@ -92,8 +92,31 @@ def contour_test():
     cv2.waitKey()
     cv2.destroyAllWindows()
 
+# TEST: reading csv file using python
+def csv_reading_test(csv_path):
+    train_params = dict()
+    with open(csv_path) as f:
+        reader = csv.reader(f, delimiter=',')
+        # skip the first row
+        reader.__next__()
+        for row in reader:
+            # split the string by space
+            train_param_tmp = np.reshape(row[1].split(), (-1, 7))
+            train_params[row[0]] = train_param_tmp
+
+    # pickle dump the dict
+    with open('train_pose_params.pickle', 'wb') as f:
+        pickle.dump(train_params, f)
+
+def training_dataset_generate():
+    # load original image and pose parameters, and generate the mask for training
+    with open('train_pose_params.pickle', 'rb') as f:
+        pose_params = pickle.load(f)
+
+
+
 if __name__ == '__main__':
-    with open('linken-SUV.json', 'rb') as jf:
+    with open('019-SUV.json', 'rb') as jf:
         car_model = json.load(jf)
 
     # load the vertex of car model
@@ -112,7 +135,11 @@ if __name__ == '__main__':
     # Tip: the z axis is defined in the opposite direction
     # vertex[:, 2] = -vertex[:, 2]
 
-    car_model_2D_project(vertex, faces)
+    # car_model_2D_project(vertex, faces)
 
     # contour test
     # contour_test()
+
+    # csv reading test
+    csv_path = r'D:\\liuchang\\Kaggle_proj\\12212019\\Pose-detection-playground\\data_sample\\train.csv'
+    csv_reading_test(csv_path)
