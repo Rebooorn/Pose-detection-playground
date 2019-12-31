@@ -47,6 +47,3 @@ def get_2D_projection(pts_3d, trans_mtx):
     pts_2d = pts_2d_affine / tmp
 
     return pts_2d.T
-
-def read_CSV(csv_path):
-    with open(csv_path, 'rb') as
