@@ -49,4 +49,4 @@ def get_2D_projection(pts_3d, trans_mtx):
     return pts_2d.T
 
 def read_CSV(csv_path):
-    with open(csv_path, 'rb') as 
+    with open(csv_path, 'rb') as
