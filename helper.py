@@ -49,7 +49,7 @@ def get_2D_projection(pts_3d, trans_mtx):
     return pts_2d.T
 
 def get_car_model(ID):
-    # get car model from the 
+    # get car model from the
 
 def generate_training_mask(img, car_model_ID, pose):
     # generate the mask for the training
