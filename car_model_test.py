@@ -108,6 +108,95 @@ def csv_reading_test(csv_path):
     with open('train_pose_params.pickle', 'wb') as f:
         pickle.dump(train_params, f)
 
+def car_ID_model_list():
+    # match the ID to the model of the car, and save the dict to pickle
+    model_list = [
+             'baojun-310-2017',
+                'biaozhi-3008',
+          'biaozhi-liangxiang',
+           'bieke-yinglang-XT',
+                'biyadi-2x-F0',
+               'changanbenben',
+                'dongfeng-DS5',
+                     'feiyate',
+         'fengtian-liangxiang',
+                'fengtian-MPV',
+           'jilixiongmao-2015',
+           'lingmu-aotuo-2009',
+                'lingmu-swift',
+             'lingmu-SX4-2012',
+              'sikeda-jingrui',
+        'fengtian-weichi-2006',
+                   '037-CAR02',
+                     'aodi-a6',
+                   'baoma-330',
+                   'baoma-530',
+            'baoshijie-paoche',
+             'bentian-fengfan',
+                 'biaozhi-408',
+                 'biaozhi-508',
+                'bieke-kaiyue',
+                        'fute',
+                     'haima-3',
+               'kaidilake-CTS',
+                   'leikesasi',
+               'mazida-6-2015',
+                  'MG-GT-2015',
+                       'oubao',
+                        'qiya',
+                 'rongwei-750',
+                  'supai-2016',
+             'xiandai-suonata',
+            'yiqi-benteng-b50',
+                       'bieke',
+                   'biyadi-F3',
+                  'biyadi-qin',
+                     'dazhong',
+              'dazhongmaiteng',
+                    'dihao-EV',
+      'dongfeng-xuetielong-C6',
+     'dongnan-V3-lingyue-2011',
+    'dongfeng-yulong-naruijie',
+                     '019-SUV',
+                   '036-CAR01',
+                 'aodi-Q7-SUV',
+                  'baojun-510',
+                    'baoma-X5',
+             'baoshijie-kayan',
+             'beiqi-huansu-H3',
+              'benchi-GLK-300',
+                'benchi-ML500',
+         'fengtian-puladuo-06',
+            'fengtian-SUV-gai',
+    'guangqi-chuanqi-GS4-2015',
+        'jianghuai-ruifeng-S3',
+                  'jili-boyue',
+                      'jipu-3',
+                  'linken-SUV',
+                   'lufeng-X8',
+                 'qirui-ruihu',
+                 'rongwei-RX5',
+             'sanling-oulande',
+                  'sikeda-SUV',
+            'Skoda_Fabia-2011',
+            'xiandai-i25-2016',
+            'yingfeinidi-qx80',
+             'yingfeinidi-SUV',
+                  'benchi-SUR',
+                 'biyadi-tang',
+           'changan-CS35-2012',
+                 'changan-cs5',
+          'changcheng-H6-2016',
+                 'dazhong-SUV',
+     'dongfeng-fengguang-S560',
+       'dongfeng-fengxing-SX6',
+    ]
+    print(model_list[-10])
+
+    with open('car_ID_model.pickle', 'wb') as f:
+        pickle.dump(model_list, f)
+
+
 def training_dataset_generate(TrainImgPath, TrainMaskPath):
     # load original image and pose parameters, and generate the mask for training
     with open('train_pose_params.pickle', 'rb') as f:
@@ -117,6 +206,7 @@ def training_dataset_generate(TrainImgPath, TrainMaskPath):
     for img_path in train_imgs:
         ID = os.path.basename(img_path)[:-4]
         poses_param = pose_params[ID]
+
 
 
 
@@ -148,5 +238,8 @@ if __name__ == '__main__':
     # contour_test()
 
     # csv reading test
-    csv_path = r'D:\\liuchang\\Kaggle_proj\\12212019\\Pose-detection-playground\\data_sample\\train.csv'
-    csv_reading_test(csv_path)
+    # csv_path = r'D:\\liuchang\\Kaggle_proj\\12212019\\Pose-detection-playground\\data_sample\\train.csv'
+    # csv_reading_test(csv_path)
+
+    # test to match car ID and car model
+    car_ID_model_list()
