@@ -1,5 +1,5 @@
 import numpy as np
-import csv
+import csv, cv2
 
 
 def get_intrinsic_mtx():
@@ -50,13 +50,38 @@ def get_2D_projection(pts_3d, trans_mtx):
 
 
 
-def generate_training_mask(img, car_model_ID, pose):
+def generate_training_mask(img, car_model, pose, disp=False):
     # Helper to generate the mask for the training
-    # img: the image where the object area will be assigned to 0
-    #
+    # img: the image where the object area will be assigned to 255. Img should have 3 channels
+    # car_model: json model of one car
+    # pose: 6D pose information
 
-    vertices = car_model_ID['vertices']
-    faces = car_model_ID['faces']
+    vertices = car_model['vertices']
+    faces = car_model['faces']
+
+    camera_mtx = get_intrinsic_mtx()
+    trans_mtx = get_translation_mtx(pose)
+
+    pts_2d = get_2D_projection(pts_3d=vertices,
+                               trans_mtx=trans_mtx)
+    pts_2d = pts_2d.astype(np.int16)
+
+    for face in faces:
+        pt1 = (pts_2d[face[0] - 1][0], pts_2d[face[0] - 1][1])
+        pt2 = (pts_2d[face[1] - 1][0], pts_2d[face[1] - 1][1])
+        pt3 = (pts_2d[face[2] - 1][0], pts_2d[face[2] - 1][1])
+        triangle_cnt = np.array([pt1, pt2, pt3], dtype=np.int64)
+        cv2.drawContours(img, [triangle_cnt], 0, (255, 255, 255), -1)
+
+    if disp:
+        cv2.imshow('img', img)
+        cv2.waitKey(0)
+        cv2.destroyAllWindows()
+
+
+
+
+
 
 
 

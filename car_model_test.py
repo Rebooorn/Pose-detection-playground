@@ -200,12 +200,18 @@ def car_ID_model_list():
 def training_dataset_generate(TrainImgPath, TrainMaskPath):
     # load original image and pose parameters, and generate the mask for training
     with open('train_pose_params.pickle', 'rb') as f:
-        pose_params = pickle.load(f)
+        car_param_dict = pickle.load(f)
+
+    with open('car_ID_model.pickle', 'rb') as f:
+        car_ID_list = pickle.load(f)
 
     train_imgs = glob.glob(TrainImgPath + '/*.jpg')
     for img_path in train_imgs:
         ID = os.path.basename(img_path)[:-4]
-        poses_param = pose_params[ID]
+        car_list = car_param_dict[ID]
+
+        for car_param
+
 
 
 
