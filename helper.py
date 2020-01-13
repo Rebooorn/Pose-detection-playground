@@ -59,11 +59,14 @@ def generate_training_mask(img, car_model, pose, disp=False):
     vertices = car_model['vertices']
     faces = car_model['faces']
 
+    vertices = np.array(vertices, dtype=np.float16)
+    faces = np.array(faces)
+
     camera_mtx = get_intrinsic_mtx()
     trans_mtx = get_translation_mtx(pose)
 
     pts_2d = get_2D_projection(pts_3d=vertices,
-                               trans_mtx=trans_mtx)
+                               trans_mtx=camera_mtx @ trans_mtx)
     pts_2d = pts_2d.astype(np.int16)
 
     for face in faces:
@@ -71,13 +74,14 @@ def generate_training_mask(img, car_model, pose, disp=False):
         pt2 = (pts_2d[face[1] - 1][0], pts_2d[face[1] - 1][1])
         pt3 = (pts_2d[face[2] - 1][0], pts_2d[face[2] - 1][1])
         triangle_cnt = np.array([pt1, pt2, pt3], dtype=np.int64)
-        cv2.drawContours(img, [triangle_cnt], 0, (255, 255, 255), -1)
+        cv2.drawContours(img, [triangle_cnt], 0, (0, 0, 255), -1)
 
     if disp:
         cv2.imshow('img', img)
         cv2.waitKey(0)
         cv2.destroyAllWindows()
 
+    return img
 
 
 
